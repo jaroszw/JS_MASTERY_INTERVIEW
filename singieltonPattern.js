@@ -1,6 +1,28 @@
-export default class FancyLogger {
+// export default class FancyLogger {
+//   constructor() {
+//     this.logs = [];
+//   }
+
+//   log(message) {
+//     this.logs.push(message);
+//     console.log(`Fancy: ${message}`);
+//   }
+
+//   printLogCount() {
+//     console.log(`${this.logs.length} Logs`);
+//   }
+// }
+
+// Class singelton
+class FancyLogger {
   constructor() {
-    this.logs = [];
+    if (FancyLogger.instance == null) {
+      this.logs = [];
+      console.log("LOGGING just once by the occasion of creatong of the class");
+      FancyLogger.instance = this;
+    }
+
+    return FancyLogger.instance;
   }
 
   log(message) {
@@ -13,60 +35,70 @@ export default class FancyLogger {
   }
 }
 
-const fancy = new FancyLogger();
-fancy.log("First");
-fancy.log("First");
+const logger = new FancyLogger();
+Object.freeze(logger); // to freeze to not to let mutate methods andf properties in the instance
 
-const notFancy = new FancyLogger();
-notFancy.log("Second");
-notFancy.log("Second");
+function logFirstTImeLogger() {
+  logger.printLogCount(); // 0 Logs
+  logger.log("First"); // Fancy: First
+  logger.printLogCount(); // 1 Logs
+}
 
-notFancy.printLogCount();
-fancy.printLogCount();
+function logSecondTImeLogger2() {
+  logger.printLogCount(); // 1 Logs
+  logger.log("Second"); // Fancy: Second
+  logger.printLogCount(); // 2 Logs
+}
 
-const FancyLogger2 = (function () {
-  let instanceOfFancy;
-  function create() {
-    let logs = [];
+logFirstTImeLogger(); // creategion instance of the logger
+logSecondTImeLogger2(); // calling tmethods in the same instance
 
-    return {
-      pushLogs: function (message) {
-        logs.push(message);
-      },
+// export default logger;
 
-      deleteLogs() {
-        logs.pop();
-      },
+//FUNCTIONAL WAY OF CERATING LOGGER
+// export const FancyLogger2 = (function () {
+//   let instanceOfFancy;
+//   function create() {
+//     let logs = [];
 
-      getCurrent5LogsState() {
-        return logs;
-      },
-    };
-  }
+//     return {
+//       pushLogs: function (message) {
+//         logs.push(message);
+//       },
 
-  return {
-    getInstanceOfLogger: function () {
-      if (!instanceOfFancy) {
-        return (instanceOfFancy = create());
-      } else {
-        return instanceOfFancy;
-      }
-    },
-  };
-})();
+//       deleteLogs() {
+//         logs.pop();
+//       },
 
-const funnyLogger1 = FancyLogger2.getInstanceOfLogger();
-const funnyLogger2 = FancyLogger2.getInstanceOfLogger();
-const funnyLogger3 = FancyLogger2.getInstanceOfLogger();
-const funnyLogger4 = FancyLogger2.getInstanceOfLogger();
+//       getCurrent5LogsState() {
+//         return logs;
+//       },
+//     };
+//   }
 
-funnyLogger1.pushLogs(1);
-funnyLogger2.pushLogs(2);
-funnyLogger3.pushLogs(3);
-funnyLogger4.pushLogs(4);
+//   return {
+//     getInstanceOfLogger: function () {
+//       if (!instanceOfFancy) {
+//         return (instanceOfFancy = create());
+//       } else {
+//         return instanceOfFancy;
+//       }
+//     },
+//   };
+// })();
 
-funnyLogger3.deleteLogs();
-funnyLogger1.deleteLogs();
+// const funnyLogger1 = FancyLogger2.getInstanceOfLogger();
+// const funnyLogger2 = FancyLogger2.getInstanceOfLogger();
+// const funnyLogger3 = FancyLogger2.getInstanceOfLogger();
+// const funnyLogger4 = FancyLogger2.getInstanceOfLogger();
 
-const result = funnyLogger1.getCurrent5LogsState();
-console.log(result);
+// funnyLogger1.pushLogs(1);
+// funnyLogger2.pushLogs(2);
+// funnyLogger3.pushLogs(3);
+// funnyLogger4.pushLogs(4);
+
+// funnyLogger3.deleteLogs();
+// funnyLogger1.deleteLogs();
+
+// const result = funnyLogger1.getCurrent5LogsState();
+// console.log(result);
